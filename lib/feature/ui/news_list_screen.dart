@@ -19,9 +19,9 @@ class NewsListScreen extends StatelessWidget {
           builder: (context, vm, builder) {
             return Stack(children: [
               ListView.builder(
-                  itemCount: vm.newsData.length,
+                  itemCount: vm.state.data.length,
                   itemBuilder: (context, index) {
-                    final newsData = vm.newsData[index];
+                    final newsData = vm.state.data[index];
                     return NewsItemView(
                       newsData: newsData,
                       onPressedImage: (data) {
@@ -36,10 +36,10 @@ class NewsListScreen extends StatelessWidget {
                       },
                     );
                   }),
-              if (vm.isLoading) const GeneralCircularLoading(),
-              if (vm.message.isNotEmpty)
+              if (vm.state.isLoading) const GeneralCircularLoading(),
+              if (vm.state.message.isNotEmpty)
                 ShowAlert(
-                  content: vm.message,
+                  content: vm.state.message,
                   onPressed: () {
                     vm.hideMessage();
                   },
