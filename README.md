@@ -1,16 +1,42 @@
-# news_app_flutter
+# Sample News App - Flutter
 
-A new Flutter project.
+A sample News App built with Flutter, targeting both Android and iOS platforms.
 
-## Getting Started
+## Tech Stack
 
-This project is a starting point for a Flutter application.
+### Languages
+- **Dart**
 
-A few resources to get you started if this is your first Flutter project:
+### UI Frameworks
+- **Material** (Android styling)
+- **Cupertino** (iOS styling)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Architecture
+- **MVVM**: Separates concerns between UI, business logic, and data.
+- **Clean Architecture**: Ensures that business rules are independent of the UI and platform layers.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### State Management
+- **Provider** and **ChangeNotifier** for reactive state management.
+
+### Networking
+- **HTTP** package for API interactions.
+
+### Storage
+- **Shared Preferences**: For local storage of lightweight data.
+- **Flutter Secure Storage**: For storing sensitive information securely.
+
+### Dependency Injection
+- **get_it** for DI and service location.
+
+## Screenshots
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+  <div style="text-align: center; margin-right: 20px;">
+    <h3>Android App - Front Page</h3>
+    <img src="https://github.com/Wildanafian/Kotlin-Multi-Platform-News-App/blob/master/screenshot/Screenshot_20241025_084456.png" alt="Android Front Page" width="400"/>
+  </div>
+  <div style="text-align: center; margin-left: 20px;">
+    <h3>iOS App - Front Page</h3>
+    <img src="https://github.com/Wildanafian/News-App-SwiftUI---iOS/blob/main/screenshot/Simulator%20Screen%20Recording.gif" alt="iOS Front Page" width="400"/>
+  </div>
+</div>
