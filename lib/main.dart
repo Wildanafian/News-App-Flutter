@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_flutter/feature/ui/news_list_screen.dart';
 
+import 'core/di/main_dependency_injection.dart';
+
 void main() {
+  provideDependencyInjection();
   runApp(const MyApp());
 }
 

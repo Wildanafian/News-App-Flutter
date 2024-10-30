@@ -2,14 +2,20 @@ import 'package:news_app_flutter/data/datasource/remote/tech_crunch_remote.dart'
 import 'package:news_app_flutter/data/model/response/news_response.dart';
 import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
+import '../../core/di/main_dependency_injection.dart';
 import '../datasource/local/local_data.dart';
 import '../model/ui/consume_result.dart';
 import '../model/ui/remote_result.dart';
 
-class TechCrunchRepository {
-  TechCrunchRemote remote = TechCrunchRemote();
-  LocalSource localSource = LocalSource();
+abstract class TechCrunchRepository {
+  Future<ConsumeResult<List<NewsItem>>> getLatestNews();
+}
 
+class TechCrunchRepositoryImpl implements TechCrunchRepository {
+  final TechCrunchRemote remote = di<TechCrunchRemote>();
+  final LocalSource localSource = di<LocalSource>();
+
+  @override
   Future<ConsumeResult<List<NewsItem>>> getLatestNews() async {
     try {
       final result = await remote.getLatestNews();
@@ -24,16 +30,16 @@ class TechCrunchRepository {
         localSource.cacheNews(mappedNews);
         return SuccessConsume<List<NewsItem>>(mappedNews);
       } else if (result is ErrorRemote<List<Article>>) {
-        return defaultError(result.message);
+        return _defaultError(result.message);
       } else {
-        return defaultError("Unknown Error");
+        return _defaultError("Unknown Error");
       }
     } catch (e) {
-      return defaultError(e.toString());
+      return _defaultError(e.toString());
     }
   }
 
-  Future<ErrorConsume<List<NewsItem>>> defaultError(String message) async {
+  Future<ErrorConsume<List<NewsItem>>> _defaultError(String message) async {
     return ErrorConsume<List<NewsItem>>(message, await localSource.getNews());
   }
 }

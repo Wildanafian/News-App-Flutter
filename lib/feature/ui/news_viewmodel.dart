@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
+import '../../core/di/main_dependency_injection.dart';
 import '../../data/model/ui/consume_result.dart';
 import '../../data/model/ui/news_item.dart';
 import '../../data/repository/tech_crunch_repository.dart';
 
 class NewsViewModel extends ChangeNotifier {
-  final TechCrunchRepository repository = TechCrunchRepository();
+  final TechCrunchRepository repository = di<TechCrunchRepository>();
 
   bool _isLoading = false;
 
