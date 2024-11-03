@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_flutter/feature/component/alert.dart';
-import 'package:news_app_flutter/feature/ui/news_detail_screen.dart';
-import 'package:news_app_flutter/feature/ui/news_viewmodel.dart';
+import 'package:news_app_flutter/feature/ui/newslist/news_detail_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../component/list_item.dart';
-import '../component/loading.dart';
-import '../component/sheet.dart';
+import '../../component/list_item.dart';
+import '../../component/loading.dart';
+import '../../component/sheet.dart';
+import 'bookmark_viewmodel.dart';
 
-class NewsListScreen extends StatelessWidget {
-  const NewsListScreen({super.key});
+class BookmarkScreen extends StatelessWidget {
+  const BookmarkScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => NewsViewModel()..getLatestNews(),
-        child: Consumer<NewsViewModel>(
+        create: (context) => BookmarkViewModel()..getLatestNews(),
+        child: Consumer<BookmarkViewModel>(
           builder: (context, vm, builder) {
             return Stack(children: [
               ListView.builder(

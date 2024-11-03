@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:news_app_flutter/data/model/ui/ui_state.dart';
 
-import '../../core/di/main_dependency_injection.dart';
-import '../../data/model/ui/consume_result.dart';
-import '../../data/model/ui/news_item.dart';
-import '../../data/repository/tech_crunch_repository.dart';
+import '../../../core/di/main_dependency_injection.dart';
+import '../../../data/model/ui/consume_result.dart';
+import '../../../data/model/ui/news_item.dart';
+import '../../../data/repository/tech_crunch_repository.dart';
 
 class NewsViewModel extends ChangeNotifier {
   final TechCrunchRepository repository = di<TechCrunchRepository>();
@@ -25,6 +25,19 @@ class NewsViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  NewsItem? _headlineNews;
+
+  NewsItem? get headlineNews => _headlineNews;
+
+  Future<void> getHeadlineNews() async {
+    _headlineNews = await repository.getHeadlineNews();
+  }
+
+  Future<void> getAllData() async {
+    getHeadlineNews();
+    getLatestNews();
   }
 
   hideMessage() {

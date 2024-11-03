@@ -9,6 +9,8 @@ import '../model/ui/remote_result.dart';
 
 abstract class TechCrunchRepository {
   Future<ConsumeResult<List<NewsItem>>> getLatestNews();
+
+  Future<NewsItem> getHeadlineNews();
 }
 
 class TechCrunchRepositoryImpl implements TechCrunchRepository {
@@ -37,6 +39,29 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
     } catch (e) {
       return _defaultError(e.toString());
     }
+  }
+
+  @override
+  Future<NewsItem> getHeadlineNews() async {
+    final data = await localSource.getNews();
+    if (data.isEmpty) {
+      final result = await remote.getLatestNews();
+      if (result is SuccessRemote<List<Article>>) {
+        final newsData = result.data.first;
+        return NewsItem(
+            title: newsData.title,
+            content: newsData.content,
+            imgUrl: newsData.urlToImage);
+      } else {
+        NewsItem(
+            title:
+                "Tim De Chant Mycocycle uses mushrooms to upcycle old tires and construction waste | TechCrunch",
+            content: "",
+            imgUrl:
+                "https://techcrunch.com/wp-content/uploads/2024/05/alphafold-3-deepmind.jpg?resize=1200,675");
+      }
+    }
+    return data.first;
   }
 
   Future<ErrorConsume<List<NewsItem>>> _defaultError(String message) async {

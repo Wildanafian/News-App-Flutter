@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../data/model/ui/news_item.dart';
-import '../component/error_state.dart';
-import '../component/loading.dart';
+import '../../../core/helper/nofication_permission.dart';
+import '../../../data/model/ui/news_item.dart';
+import '../../component/error_state.dart';
+import '../../component/loading.dart';
 
 class DetailScreen extends StatelessWidget {
   final NewsItem data;
@@ -11,6 +12,7 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    requestCameraPermission();
     return MaterialApp(
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
