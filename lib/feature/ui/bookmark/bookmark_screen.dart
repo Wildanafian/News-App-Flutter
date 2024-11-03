@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:news_app_flutter/feature/component/alert.dart';
 import 'package:news_app_flutter/feature/ui/newslist/news_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -34,16 +33,42 @@ class BookmarkScreen extends StatelessWidget {
                               builder: (context) => DetailScreen(data: data)),
                         );
                       },
+                      onPressedBookmark: (data) {
+                        vm.deleteNews(data.title);
+                        vm.getLatestNews();
+                      },
                     );
                   }),
               if (vm.state.isLoading) const GeneralCircularLoading(),
-              if (vm.state.message.isNotEmpty)
-                ShowAlert(
-                  content: vm.state.message,
-                  onPressed: () {
-                    vm.hideMessage();
-                  },
-                )
+              if (vm.state.data.isEmpty)
+                Center(
+                    child: SizedBox(
+                  width: 300,
+                  height: 200,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.bookmark_outline,
+                            color: Colors.grey, size: 100),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Text(
+                            "Lets bookmark some good news!",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ))
             ]);
           },
         ));

@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:news_app_flutter/data/model/ui/ui_state.dart';
 
 import '../../../core/di/main_dependency_injection.dart';
-import '../../../data/model/ui/consume_result.dart';
 import '../../../data/model/ui/news_item.dart';
-import '../../../data/repository/tech_crunch_repository.dart';
+import '../../../data/repository/bookmark_repository.dart';
 
 class BookmarkViewModel extends ChangeNotifier {
-  final TechCrunchRepository repository = di<TechCrunchRepository>();
+  final BookmarkRepository repository = di<BookmarkRepository>();
 
   final UIState<List<NewsItem>> _state = UIState<List<NewsItem>>(data: []);
 
@@ -17,18 +16,21 @@ class BookmarkViewModel extends ChangeNotifier {
     _state.updateLoading(true);
     notifyListeners();
 
-    final result = await repository.getLatestNews();
-    if (result is SuccessConsume<List<NewsItem>>) {
-      _state.updateData(result.data.take(2).toList());
-    } else if (result is ErrorConsume<List<NewsItem>>) {
-      _state.updateMessageWithData(result.data, result.message);
-    }
-
+    _state.updateData(await repository.getAllBookmarkedNews());
     notifyListeners();
   }
 
-  hideMessage() {
-    _state.updateMessage("");
+  void bookmarkNews(NewsItem data) async {
+    repository.addBookmarkNews(data);
+  }
+
+  void deleteNews(String key) async {
+    await repository.deleteBookmarkedNews(key);
+  }
+
+  void handleBookmarkState(int index) {
+    final bookmarkState = _state.data[index].isBookmarked;
+    _state.data[index].isBookmarked = !bookmarkState;
     notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_flutter/feature/component/alert.dart';
+import 'package:news_app_flutter/feature/ui/bookmark/bookmark_viewmodel.dart';
 import 'package:news_app_flutter/feature/ui/newslist/news_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,7 @@ class NewsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vmBookmark = BookmarkViewModel();
     return ChangeNotifierProvider(
         create: (context) => NewsViewModel()..getAllData(),
         child: Consumer<NewsViewModel>(
@@ -39,7 +41,7 @@ class NewsListScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    NewsListBuilder(vm: vm),
+                    NewsListBuilder(vm: vm, vmBookmark: vmBookmark),
                   ],
                 ),
               ),
@@ -126,8 +128,10 @@ class NewsHeadlineBuilder extends StatelessWidget {
 
 class NewsListBuilder extends StatelessWidget {
   final NewsViewModel vm;
+  final BookmarkViewModel vmBookmark;
 
-  const NewsListBuilder({super.key, required this.vm});
+  const NewsListBuilder(
+      {super.key, required this.vm, required this.vmBookmark});
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +155,14 @@ class NewsListBuilder extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => DetailScreen(data: data)),
                 );
+              },
+              onPressedBookmark: (data) {
+                if (data.isBookmarked == false) {
+                  vmBookmark.bookmarkNews(data.copyWith(isBookmarked: true));
+                } else {
+                  vmBookmark.deleteNews(data.title);
+                }
+                vm.handleBookmarkState(index);
               },
             );
           }),

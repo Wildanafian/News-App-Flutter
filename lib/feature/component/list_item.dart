@@ -8,12 +8,14 @@ class NewsItemView extends StatelessWidget {
   final NewsItem newsData;
   final Function(NewsItem data) onPressedImage;
   final Function(NewsItem data) onPressedTitle;
+  final Function(NewsItem data) onPressedBookmark;
 
   const NewsItemView(
       {super.key,
       required this.newsData,
       required this.onPressedImage,
-      required this.onPressedTitle});
+      required this.onPressedTitle,
+      required this.onPressedBookmark});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,8 @@ class NewsItemView extends StatelessWidget {
                       child: GestureDetector(
                     onTap: () => onPressedTitle(newsData),
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.only(
+                          left: 12, top: 12, bottom: 12, right: 6),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +79,18 @@ class NewsItemView extends StatelessWidget {
                       ),
                     ),
                   )),
+                  Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: GestureDetector(
+                          onTap: () => onPressedBookmark(newsData),
+                          child: Icon(
+                            newsData.isBookmarked ?? false
+                                ? Icons.bookmark
+                                : Icons.bookmark_outline,
+                            color: newsData.isBookmarked ?? false
+                                ? Colors.blue
+                                : Colors.grey,
+                          )))
                 ],
               ),
             ),

@@ -44,4 +44,10 @@ class NewsViewModel extends ChangeNotifier {
     _state.updateMessage("");
     notifyListeners();
   }
+
+  void handleBookmarkState(int index) {
+    final bookmarkState = _state.data[index].isBookmarked;
+    _state.data[index].isBookmarked = !bookmarkState;
+    notifyListeners();
+  }
 }

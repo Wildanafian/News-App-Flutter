@@ -4,6 +4,7 @@ import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
 import '../../core/di/main_dependency_injection.dart';
 import '../datasource/local/local_data.dart';
+import '../datasource/local/local_hive.dart';
 import '../model/ui/consume_result.dart';
 import '../model/ui/remote_result.dart';
 
@@ -16,20 +17,24 @@ abstract class TechCrunchRepository {
 class TechCrunchRepositoryImpl implements TechCrunchRepository {
   final TechCrunchRemote remote = di<TechCrunchRemote>();
   final LocalSource localSource = di<LocalSource>();
+  final LocalBookmark localHive = di<LocalBookmark>();
 
   @override
   Future<ConsumeResult<List<NewsItem>>> getLatestNews() async {
     try {
       final result = await remote.getLatestNews();
+      final bookmarkList = await localHive.getAllBookmarkedNews();
 
       if (result is SuccessRemote<List<Article>>) {
         final mappedNews = result.data
             .map((data) => NewsItem(
                 title: data.title,
                 content: data.content + data.description,
-                imgUrl: data.urlToImage))
+                imgUrl: data.urlToImage,
+                isBookmarked: _isBookmarked(data.title, bookmarkList)))
             .toList();
         localSource.cacheNews(mappedNews);
+
         return SuccessConsume<List<NewsItem>>(mappedNews);
       } else if (result is ErrorRemote<List<Article>>) {
         return _defaultError(result.message);
@@ -62,6 +67,10 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
       }
     }
     return data.first;
+  }
+
+  bool _isBookmarked(String key, List<NewsItem> cache) {
+    return cache.any((item) => item.title == key);
   }
 
   Future<ErrorConsume<List<NewsItem>>> _defaultError(String message) async {

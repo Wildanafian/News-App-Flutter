@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'core/di/main_dependency_injection.dart';
+import 'core/hive/hive_init.dart';
 import 'feature/ui/bottom_navigation_bar.dart';
 
 void main() {
+  initHive();
   provideDependencyInjection();
   runApp(const MyApp());
 }
