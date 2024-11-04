@@ -2,7 +2,6 @@ import 'package:news_app_flutter/data/datasource/remote/tech_crunch_remote.dart'
 import 'package:news_app_flutter/data/model/response/news_response.dart';
 import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
-import '../../core/di/main_dependency_injection.dart';
 import '../datasource/local/local_data.dart';
 import '../datasource/local/local_hive.dart';
 import '../model/ui/consume_result.dart';
@@ -15,9 +14,12 @@ abstract class TechCrunchRepository {
 }
 
 class TechCrunchRepositoryImpl implements TechCrunchRepository {
-  final TechCrunchRemote remote = di<TechCrunchRemote>();
-  final LocalSource localSource = di<LocalSource>();
-  final LocalBookmark localHive = di<LocalBookmark>();
+  final TechCrunchRemote remote;
+  final LocalSource localPref;
+  final LocalBookmark localHive;
+
+  TechCrunchRepositoryImpl(
+      {required this.remote, required this.localPref, required this.localHive});
 
   @override
   Future<ConsumeResult<List<NewsItem>>> getLatestNews() async {
@@ -33,7 +35,7 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
                 imgUrl: data.urlToImage,
                 isBookmarked: _isBookmarked(data.title, bookmarkList)))
             .toList();
-        localSource.cacheNews(mappedNews);
+        localPref.cacheNews(mappedNews);
 
         return SuccessConsume<List<NewsItem>>(mappedNews);
       } else if (result is ErrorRemote<List<Article>>) {
@@ -48,7 +50,7 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
 
   @override
   Future<NewsItem> getHeadlineNews() async {
-    final data = await localSource.getNews();
+    final data = await localPref.getNews();
     if (data.isEmpty) {
       final result = await remote.getLatestNews();
       if (result is SuccessRemote<List<Article>>) {
@@ -74,6 +76,6 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
   }
 
   Future<ErrorConsume<List<NewsItem>>> _defaultError(String message) async {
-    return ErrorConsume<List<NewsItem>>(message, await localSource.getNews());
+    return ErrorConsume<List<NewsItem>>(message, await localPref.getNews());
   }
 }

@@ -1,4 +1,3 @@
-import '../../core/di/main_dependency_injection.dart';
 import '../datasource/local/local_hive.dart';
 import '../model/ui/news_item.dart';
 
@@ -11,7 +10,9 @@ abstract class BookmarkRepository {
 }
 
 class BookmarkRepositoryImpl implements BookmarkRepository {
-  final LocalBookmark localSource = di<LocalBookmark>();
+  final LocalBookmark localSource;
+
+  BookmarkRepositoryImpl({required this.localSource});
 
   @override
   Future<void> addBookmarkNews(newsItem) async {

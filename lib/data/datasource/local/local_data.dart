@@ -4,8 +4,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:news_app_flutter/core/constant/general_constant.dart';
 import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
-import '../../../core/di/main_dependency_injection.dart';
-
 abstract class LocalSource {
   Future<void> cacheNews(List<NewsItem> newsData);
 
@@ -13,7 +11,9 @@ abstract class LocalSource {
 }
 
 class LocalSourceImpl implements LocalSource {
-  final FlutterSecureStorage secureStorage = di<FlutterSecureStorage>();
+  final FlutterSecureStorage secureStorage;
+
+  LocalSourceImpl({required this.secureStorage});
 
   @override
   Future<void> cacheNews(List<NewsItem> newsData) async {

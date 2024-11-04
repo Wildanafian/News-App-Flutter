@@ -4,14 +4,14 @@ import 'package:news_app_flutter/core/network/api_call.dart';
 import 'package:news_app_flutter/data/model/response/news_response.dart';
 import 'package:news_app_flutter/data/model/ui/remote_result.dart';
 
-import '../../../core/di/main_dependency_injection.dart';
-
 abstract class TechCrunchRemote {
   Future<RemoteResult<List<Article>>> getLatestNews();
 }
 
 class TechCrunchRemoteImpl implements TechCrunchRemote {
-  final ApiCall api = di<ApiCall>();
+  final ApiCall api;
+
+  TechCrunchRemoteImpl({required this.api});
 
   @override
   Future<RemoteResult<List<Article>>> getLatestNews() async {

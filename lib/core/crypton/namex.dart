@@ -4,23 +4,27 @@ import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../constant/general_constant.dart';
-import '../di/main_dependency_injection.dart';
 
-Future<List<int>> generateEncryptionKey() async {
-  final FlutterSecureStorage secureStorage = di<FlutterSecureStorage>();
+class Crypton {
+  final FlutterSecureStorage _secureStorage;
 
-  final secureThing = await secureStorage.read(key: GeneralConst.something);
+  Crypton({required FlutterSecureStorage secureStorage})
+      : _secureStorage = secureStorage;
 
-  if (secureThing != null) {
-    List<dynamic> jsonList = jsonDecode(secureThing);
-    return jsonList.cast<int>();
-  } else {
-    final someSecureThing =
-        List<int>.generate(32, (_) => Random.secure().nextInt(256));
+  Future<List<int>> generateEncryptionKey() async {
+    final secureThing = await _secureStorage.read(key: GeneralConst.something);
 
-    String johnson = jsonEncode(someSecureThing);
-    await secureStorage.write(key: GeneralConst.something, value: johnson);
+    if (secureThing != null) {
+      List<dynamic> jsonList = jsonDecode(secureThing);
+      return jsonList.cast<int>();
+    } else {
+      final someSecureThing =
+          List<int>.generate(32, (_) => Random.secure().nextInt(256));
 
-    return someSecureThing;
+      String johnson = jsonEncode(someSecureThing);
+      await _secureStorage.write(key: GeneralConst.something, value: johnson);
+
+      return someSecureThing;
+    }
   }
 }
