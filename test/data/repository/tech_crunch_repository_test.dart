@@ -39,8 +39,8 @@ void main() {
         remote: remote, localPref: localSource, localHive: localBookmark);
   });
 
-  group("TechCrunchRepository", () {
-    test("hit getLatestNews then should return data", () async {
+  group("getLatestNews", () {
+    test("should return data", () async {
       when(remote.getLatestNews())
           .thenAnswer((_) async => Future.value(SuccessRemote([article])));
 
@@ -54,7 +54,7 @@ void main() {
       expect(true, result.data.first.isBookmarked);
     });
 
-    test("hit getLatestNews then should return error with data", () async {
+    test("should return error with data", () async {
       when(remote.getLatestNews())
           .thenAnswer((_) async => Future.value(ErrorRemote("failed bruh")));
 
@@ -73,8 +73,7 @@ void main() {
       expect("failed bruh", result.message);
     });
 
-    test("hit getLatestNews then should return error bcs of caching exception",
-        () async {
+    test("should return error bcs of caching exception", () async {
       when(remote.getLatestNews())
           .thenThrow(Exception("you got some exception"));
 
@@ -87,8 +86,11 @@ void main() {
       expect("asd", result.data.first.title);
       expect(true, result.data.first.isBookmarked);
     });
+  });
 
-    test("getHeadlineNews should return data", () async {
+  group("getHeadlineNews", () {
+    test("localSource.getNews() is not empty then should return data",
+        () async {
       final data = NewsItem(
           title: "title",
           content: "content",
@@ -96,6 +98,41 @@ void main() {
           isBookmarked: true);
 
       when(localSource.getNews()).thenAnswer((_) async => Future.value([data]));
+
+      final result = await sut.getHeadlineNews();
+
+      expect(data.title, result.title);
+    });
+
+    test("localSource.getNews() is empty then should return data", () async {
+      when(localSource.getNews()).thenAnswer((_) async => Future.value([]));
+
+      when(remote.getLatestNews())
+          .thenAnswer((_) async => Future.value(SuccessRemote([article])));
+
+      final data = NewsItem(
+          title: article.title,
+          content: article.content,
+          imgUrl: article.urlToImage);
+
+      final result = await sut.getHeadlineNews();
+
+      expect(data.title, result.title);
+    });
+
+    test("localSource.getLatestNews() is error then should return data",
+        () async {
+      when(localSource.getNews()).thenAnswer((_) async => Future.value([]));
+
+      when(remote.getLatestNews())
+          .thenAnswer((_) async => Future.value(ErrorRemote("error")));
+
+      final data = NewsItem(
+          title:
+              "Tim De Chant Mycocycle uses mushrooms to upcycle old tires and construction waste | TechCrunch",
+          content: "",
+          imgUrl:
+              "https://techcrunch.com/wp-content/uploads/2024/05/alphafold-3-deepmind.jpg?resize=1200,675");
 
       final result = await sut.getHeadlineNews();
 

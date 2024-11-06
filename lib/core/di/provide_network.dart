@@ -9,5 +9,6 @@ void provideNetwork() {
         interceptors: [LoggerInterceptor()],
         requestTimeout: const Duration(seconds: 30),
       ));
-  di.registerLazySingleton<ApiCall>(() => ApiCallImpl());
+  di.registerLazySingleton<ApiCall>(
+      () => ApiCallImpl(httpClient: di<InterceptedClient>()));
 }

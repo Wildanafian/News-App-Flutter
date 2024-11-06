@@ -38,10 +38,9 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
         localPref.cacheNews(mappedNews);
 
         return SuccessConsume<List<NewsItem>>(mappedNews);
-      } else if (result is ErrorRemote<List<Article>>) {
-        return _defaultError(result.message);
       } else {
-        return _defaultError("Unknown Error");
+        final errorResult = result as ErrorRemote<List<Article>>;
+        return _defaultError(errorResult.message);
       }
     } catch (e) {
       return _defaultError(e.toString());
@@ -60,7 +59,7 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
             content: newsData.content,
             imgUrl: newsData.urlToImage);
       } else {
-        NewsItem(
+        return NewsItem(
             title:
                 "Tim De Chant Mycocycle uses mushrooms to upcycle old tires and construction waste | TechCrunch",
             content: "",
