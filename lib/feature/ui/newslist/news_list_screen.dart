@@ -15,35 +15,29 @@ class NewsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vmBookmark = BookmarkViewModel();
     return ChangeNotifierProvider(
         create: (context) => NewsViewModel()..getAllData(),
         child: Consumer<NewsViewModel>(
           builder: (context, vm, builder) {
             return Stack(children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    NewsHeadlineBuilder(vm: vm),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 12, top: 20, right: 12, bottom: 0),
-                        child: Text(
-                          "Today's Latest News",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
+              ListView(
+                children: [
+                  NewsHeadlineBuilder(vm: vm),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 12, top: 20, right: 12, bottom: 0),
+                    child: Text(
+                      "Today's Latest News",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
                     ),
-                    NewsListBuilder(vm: vm, vmBookmark: vmBookmark),
-                  ],
-                ),
+                  ),
+                  NewsListBuilder(vm: vm),
+                ],
               ),
               if (vm.state.isLoading) const GeneralCircularLoading(),
               if (vm.state.message.isNotEmpty)
@@ -85,15 +79,13 @@ class NewsHeadlineBuilder extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.network(vm.headlineNews?.imgUrl ?? "",
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
+            child:
+                Image.network(vm.headlineNews?.imgUrl ?? "", fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return NewsItemCircularLoading(loadingProgress: loadingProgress);
             }, errorBuilder: (BuildContext context, Object exception,
-                    StackTrace? stackTrace) {
+                        StackTrace? stackTrace) {
               return const ImageErrorPlaceHolder();
             }),
           ),
@@ -128,44 +120,48 @@ class NewsHeadlineBuilder extends StatelessWidget {
 
 class NewsListBuilder extends StatelessWidget {
   final NewsViewModel vm;
-  final BookmarkViewModel vmBookmark;
 
-  const NewsListBuilder(
-      {super.key, required this.vm, required this.vmBookmark});
+  const NewsListBuilder({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
+    final vmBookmark = BookmarkViewModel();
     return MediaQuery.removePadding(
       removeTop: true,
       context: context,
-      child: ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: vm.state.data.length,
-          itemBuilder: (context, index) {
-            final newsData = vm.state.data[index];
-            return NewsItemView(
-              newsData: newsData,
-              onPressedImage: (data) {
-                detailSheet(context, data);
-              },
-              onPressedTitle: (data) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailScreen(data: data)),
-                );
-              },
-              onPressedBookmark: (data) {
-                if (data.isBookmarked == false) {
-                  vmBookmark.bookmarkNews(data.copyWith(isBookmarked: true));
-                } else {
-                  vmBookmark.deleteNews(data.title);
-                }
-                vm.handleBookmarkState(index);
-              },
-            );
-          }),
+      child: ListView.separated(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: vm.state.data.length,
+        itemBuilder: (context, index) {
+          final newsData = vm.state.data[index];
+          return NewsItemView(
+            newsData: newsData,
+            onPressedImage: (data) {
+              detailSheet(context, data);
+            },
+            onPressedTitle: (data) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailScreen(data: data)),
+              );
+            },
+            onPressedBookmark: (data) {
+              if (data.isBookmarked == false) {
+                vmBookmark.bookmarkNews(data.copyWith(isBookmarked: true));
+              } else {
+                vmBookmark.deleteNews(data.title);
+              }
+              vm.handleBookmarkState(index);
+            },
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(height: 6);
+        },
+      ),
     );
   }
 }

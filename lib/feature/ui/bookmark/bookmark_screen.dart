@@ -17,35 +17,38 @@ class BookmarkScreen extends StatelessWidget {
         child: Consumer<BookmarkViewModel>(
           builder: (context, vm, builder) {
             return Stack(children: [
-              ListView.builder(
-                  itemCount: vm.state.data.length,
-                  itemBuilder: (context, index) {
-                    final newsData = vm.state.data[index];
-                    return NewsItemView(
-                      newsData: newsData,
-                      onPressedImage: (data) {
-                        detailSheet(context, data);
-                      },
-                      onPressedTitle: (data) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailScreen(data: data)),
-                        );
-                      },
-                      onPressedBookmark: (data) {
-                        vm.deleteNews(data.title);
-                        vm.getLatestNews();
-                      },
-                    );
-                  }),
+              ListView.separated(
+                itemCount: vm.state.data.length,
+                itemBuilder: (context, index) {
+                  final newsData = vm.state.data[index];
+                  return NewsItemView(
+                    newsData: newsData,
+                    onPressedImage: (data) {
+                      detailSheet(context, data);
+                    },
+                    onPressedTitle: (data) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailScreen(data: data)),
+                      );
+                    },
+                    onPressedBookmark: (data) {
+                      vm.deleteNews(data.title);
+                      vm.getLatestNews();
+                    },
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 6);
+                },
+              ),
               if (vm.state.isLoading) const GeneralCircularLoading(),
               if (vm.state.data.isEmpty)
                 Center(
-                    child: SizedBox(
-                  width: 300,
-                  height: 200,
                   child: Container(
+                    width: 300,
+                    height: 200,
                     decoration: BoxDecoration(
                         color: Colors.blue.withOpacity(0.1),
                         borderRadius:
@@ -68,7 +71,7 @@ class BookmarkScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                ))
+                )
             ]);
           },
         ));

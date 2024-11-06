@@ -21,81 +21,72 @@ class NewsItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    return Padding(
-      padding: const EdgeInsets.only(left: 6, top: 6, right: 6),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Card(
-            color: Colors.white,
-            elevation: 2,
-            clipBehavior: Clip.hardEdge,
-            child: SizedBox(
-              width: double.infinity,
-              height: 150,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  GestureDetector(
-                    onTap: () => onPressedImage(newsData),
-                    child: Image.network(newsData.imgUrl,
-                        width: 100, height: double.infinity, fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return NewsItemCircularLoading(
-                          loadingProgress: loadingProgress);
-                    }, errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                      return const ImageErrorPlaceHolder();
-                    }),
-                  ),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () => onPressedTitle(newsData),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12, top: 12, bottom: 12, right: 6),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            newsData.title,
-                            style: textTheme.titleLarge,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Text(
-                              newsData.content,
-                              style: textTheme.bodySmall
-                                  ?.copyWith(color: Colors.grey),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+    return Card(
+      color: Colors.white,
+      elevation: 2,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        height: 150,
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () => onPressedImage(newsData),
+              child: Image.network(newsData.imgUrl,
+                  width: 100, height: double.infinity, fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return NewsItemCircularLoading(
+                    loadingProgress: loadingProgress);
+              }, errorBuilder: (BuildContext context, Object exception,
+                      StackTrace? stackTrace) {
+                return const ImageErrorPlaceHolder();
+              }),
+            ),
+            Expanded(
+                child: GestureDetector(
+              onTap: () => onPressedTitle(newsData),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 12, top: 12, bottom: 12, right: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      newsData.title,
+                      style: textTheme.titleMedium,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        newsData.content,
+                        style:
+                            textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
                       ),
                     ),
-                  )),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: GestureDetector(
-                          onTap: () => onPressedBookmark(newsData),
-                          child: Icon(
-                            newsData.isBookmarked ?? false
-                                ? Icons.bookmark
-                                : Icons.bookmark_outline,
-                            color: newsData.isBookmarked ?? false
-                                ? Colors.blue
-                                : Colors.grey,
-                          )))
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )),
+            Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: GestureDetector(
+                    onTap: () => onPressedBookmark(newsData),
+                    child: Icon(
+                      newsData.isBookmarked ?? false
+                          ? Icons.bookmark
+                          : Icons.bookmark_outline,
+                      color: newsData.isBookmarked ?? false
+                          ? Colors.blue
+                          : Colors.grey,
+                    )))
+          ],
+        ),
       ),
     );
   }

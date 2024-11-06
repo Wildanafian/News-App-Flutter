@@ -13,12 +13,10 @@ void detailSheet(BuildContext context, NewsItem data) {
     builder: (context) {
       return SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
+        child: ListView(
+          children: [
             Image.network(
               data.imgUrl,
-              width: double.infinity,
               height: 250,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
