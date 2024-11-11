@@ -1,14 +1,20 @@
+import 'dart:math';
+
 import 'package:news_app_flutter/data/datasource/remote/tech_crunch_remote.dart';
 import 'package:news_app_flutter/data/model/response/news_response.dart';
 import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
+import '../../core/constant/general_constant.dart';
+import '../../core/helper/custom_exception.dart';
 import '../datasource/local/local_data.dart';
 import '../datasource/local/local_hive.dart';
 import '../model/ui/consume_result.dart';
 import '../model/ui/remote_result.dart';
 
 abstract class TechCrunchRepository {
-  Future<ConsumeResult<List<NewsItem>>> getLatestNews();
+  Future<ConsumeResult<List<NewsItem>>> getTechNews();
+
+  Future<ConsumeResult<List<NewsItem>>> getEconomyNews();
 
   Future<NewsItem> getHeadlineNews();
 }
@@ -22,59 +28,75 @@ class TechCrunchRepositoryImpl implements TechCrunchRepository {
       {required this.remote, required this.localPref, required this.localHive});
 
   @override
-  Future<ConsumeResult<List<NewsItem>>> getLatestNews() async {
+  Future<ConsumeResult<List<NewsItem>>> getTechNews() async {
     try {
-      final result = await remote.getLatestNews();
+      final result = await remote.getTechLatestNews();
+      final bookmarkList = await localHive.getAllBookmarkedNews();
+
+      if (result is SuccessRemote<List<Article>>) {
+        List<NewsItem> mappedNews = result.data
+            .map((data) => NewsItem(
+                title: data.title ?? "",
+                content: (data.content ?? "") + (data.description ?? ""),
+                imgUrl: data.urlToImage ?? "",
+                isBookmarked: _isBookmarked(data.title ?? "", bookmarkList)))
+            .toList();
+        mappedNews.shuffle();
+        localPref.cacheNews(GeneralConst.techData, mappedNews);
+
+        return SuccessConsume<List<NewsItem>>(mappedNews);
+      } else {
+        final errorResult = result as ErrorRemote<List<Article>>;
+        return _defaultError(GeneralConst.techData, errorResult.message);
+      }
+    } catch (e) {
+      return _defaultError(GeneralConst.techData, e.toString());
+    }
+  }
+
+  @override
+  Future<ConsumeResult<List<NewsItem>>> getEconomyNews() async {
+    try {
+      final result = await remote.getEconomyLatestNews();
       final bookmarkList = await localHive.getAllBookmarkedNews();
 
       if (result is SuccessRemote<List<Article>>) {
         final mappedNews = result.data
             .map((data) => NewsItem(
-                title: data.title,
-                content: data.content + data.description,
-                imgUrl: data.urlToImage,
-                isBookmarked: _isBookmarked(data.title, bookmarkList)))
+                title: data.title ?? "",
+                content: (data.content ?? "") + (data.description ?? ""),
+                imgUrl: data.urlToImage ?? "",
+                isBookmarked: _isBookmarked(data.title ?? "", bookmarkList)))
             .toList();
-        localPref.cacheNews(mappedNews);
-
+        mappedNews.shuffle();
+        localPref.cacheNews(GeneralConst.economyData, mappedNews);
         return SuccessConsume<List<NewsItem>>(mappedNews);
       } else {
         final errorResult = result as ErrorRemote<List<Article>>;
-        return _defaultError(errorResult.message);
+        return _defaultError(GeneralConst.economyData, errorResult.message);
       }
     } catch (e) {
-      return _defaultError(e.toString());
+      return _defaultError(GeneralConst.economyData, e.toString());
     }
   }
 
   @override
   Future<NewsItem> getHeadlineNews() async {
-    final data = await localPref.getNews();
+    final newsSource = [GeneralConst.techData, GeneralConst.economyData];
+    final data = await localPref.getNews(newsSource[Random().nextInt(2)]);
     if (data.isEmpty) {
-      final result = await remote.getLatestNews();
-      if (result is SuccessRemote<List<Article>>) {
-        final newsData = result.data.first;
-        return NewsItem(
-            title: newsData.title,
-            content: newsData.content,
-            imgUrl: newsData.urlToImage);
-      } else {
-        return NewsItem(
-            title:
-                "Tim De Chant Mycocycle uses mushrooms to upcycle old tires and construction waste | TechCrunch",
-            content: "",
-            imgUrl:
-                "https://techcrunch.com/wp-content/uploads/2024/05/alphafold-3-deepmind.jpg?resize=1200,675");
-      }
+      throw EmptyHeadlineException();
+    } else {
+      return data[Random().nextInt(9)];
     }
-    return data.first;
   }
 
   bool _isBookmarked(String key, List<NewsItem> cache) {
     return cache.any((item) => item.title == key);
   }
 
-  Future<ErrorConsume<List<NewsItem>>> _defaultError(String message) async {
-    return ErrorConsume<List<NewsItem>>(message, await localPref.getNews());
+  Future<ErrorConsume<List<NewsItem>>> _defaultError(
+      String key, String message) async {
+    return ErrorConsume<List<NewsItem>>(message, await localPref.getNews(key));
   }
 }

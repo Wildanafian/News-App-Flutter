@@ -28,11 +28,11 @@ void main() {
       final encodedData = jsonEncode(newsData.map((e) => e.toJson()).toList());
 
       // Act
-      await sut.cacheNews(newsData);
+      await sut.cacheNews(GeneralConst.techData, newsData);
 
       // Assert
       verify(mockSecureStorage.write(
-        key: GeneralConst.newsData,
+        key: GeneralConst.techData,
         value: encodedData,
       )).called(1);
     });
@@ -46,11 +46,11 @@ void main() {
       final encodedData = jsonEncode(newsData.map((e) => e.toJson()).toList());
 
       // Arrange
-      when(mockSecureStorage.read(key: GeneralConst.newsData))
+      when(mockSecureStorage.read(key: GeneralConst.techData))
           .thenAnswer((_) async => encodedData);
 
       // Act
-      final result = await sut.getNews();
+      final result = await sut.getNews(GeneralConst.techData);
 
       // Assert
       expect(result, isA<List<NewsItem>>());
@@ -60,11 +60,11 @@ void main() {
 
     test('should return an empty list if no cached data is found', () async {
       // Arrange
-      when(mockSecureStorage.read(key: GeneralConst.newsData))
+      when(mockSecureStorage.read(key: GeneralConst.techData))
           .thenAnswer((_) async => null);
 
       // Act
-      final result = await sut.getNews();
+      final result = await sut.getNews(GeneralConst.techData);
 
       // Assert
       expect(result, isEmpty);

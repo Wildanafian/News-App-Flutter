@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app_flutter/core/resouce/text_style.dart';
 import 'package:news_app_flutter/data/model/ui/news_item.dart';
 
 import 'error_state.dart';
@@ -23,8 +24,7 @@ void detailSheet(BuildContext context, NewsItem data) {
                 if (loadingProgress == null) {
                   return child;
                 }
-                return NewsItemCircularLoading(
-                    loadingProgress: loadingProgress);
+                return const NewsItemCircularLoading();
               },
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace? stackTrace) {
@@ -35,7 +35,7 @@ void detailSheet(BuildContext context, NewsItem data) {
               padding: const EdgeInsets.only(left: 12, top: 6, right: 12),
               child: Text(
                 data.title,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: GetStyle.mediumBoldBlack,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -45,7 +45,7 @@ void detailSheet(BuildContext context, NewsItem data) {
                   left: 12, top: 12, right: 8, bottom: 30),
               child: Text(
                 data.content,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: GetStyle.normalNormalBlack,
               ),
             ),
           ],

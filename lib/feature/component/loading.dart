@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class NewsItemCircularLoading extends StatelessWidget {
-  final ImageChunkEvent loadingProgress;
-
-  const NewsItemCircularLoading({super.key, required this.loadingProgress});
+  const NewsItemCircularLoading({super.key});
 
   @override
   Widget build(BuildContext context) {

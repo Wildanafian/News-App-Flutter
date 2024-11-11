@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/resouce/strings.dart';
 import 'bookmark/bookmark_screen.dart';
 import 'newslist/news_list_screen.dart';
 
@@ -42,11 +43,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
               NavigationDestination(
                   selectedIcon: Icon(Icons.home, color: Colors.white),
                   icon: Icon(Icons.home_outlined),
-                  label: "Home"),
+                  label: GetStrings.home),
               NavigationDestination(
                   selectedIcon: Icon(Icons.bookmark, color: Colors.white),
                   icon: Icon(Icons.bookmark_outline),
-                  label: "Bookmark")
+                  label: GetStrings.bookmark)
             ]),
       ),
       body: [const NewsListScreen(), const BookmarkScreen()][currentPage],

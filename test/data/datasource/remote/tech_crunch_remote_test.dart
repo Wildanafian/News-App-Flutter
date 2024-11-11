@@ -19,7 +19,7 @@ void main() {
     sut = TechCrunchRemoteImpl(api: apiCall);
   });
 
-  group("get news", () {
+  group("get tech news", () {
     test("hit getLatestNews should return success data", () async {
       final article = Article(
           source: Source(name: "asd"),
@@ -34,9 +34,9 @@ void main() {
           NewsResponse(status: "200", message: "success", articles: [article]);
 
       final body = Response(newsResponseToJson(rawBody), 200);
-      when(apiCall.fetchNews()).thenAnswer((_) async => body);
+      when(apiCall.fetchTechNews()).thenAnswer((_) async => body);
 
-      final result = await sut.getLatestNews();
+      final result = await sut.getTechLatestNews();
       expect(article.title,
           (result as SuccessRemote<List<Article>>).data.first.title);
     });
@@ -46,9 +46,43 @@ void main() {
           NewsResponse(status: "400", message: "failed", articles: []);
 
       final body = Response(newsResponseToJson(rawBody), 400);
-      when(apiCall.fetchNews()).thenAnswer((_) async => body);
+      when(apiCall.fetchTechNews()).thenAnswer((_) async => body);
 
-      final result = await sut.getLatestNews();
+      final result = await sut.getTechLatestNews();
+      expect("failed", (result as ErrorRemote<List<Article>>).message);
+    });
+  });
+
+  group("get economy news", () {
+    test("should return success data", () async {
+      final article = Article(
+          source: Source(name: "asd"),
+          title: "asd",
+          description: "zxc",
+          url: "zxc",
+          urlToImage: "zxc",
+          publishedAt: DateTime(0),
+          content: "lorem");
+
+      final rawBody =
+          NewsResponse(status: "200", message: "success", articles: [article]);
+
+      final body = Response(newsResponseToJson(rawBody), 200);
+      when(apiCall.fetchEconomyNews()).thenAnswer((_) async => body);
+
+      final result = await sut.getEconomyLatestNews();
+      expect(article.title,
+          (result as SuccessRemote<List<Article>>).data.first.title);
+    });
+
+    test("should return error message", () async {
+      final rawBody =
+          NewsResponse(status: "400", message: "failed", articles: []);
+
+      final body = Response(newsResponseToJson(rawBody), 400);
+      when(apiCall.fetchEconomyNews()).thenAnswer((_) async => body);
+
+      final result = await sut.getEconomyLatestNews();
       expect("failed", (result as ErrorRemote<List<Article>>).message);
     });
   });

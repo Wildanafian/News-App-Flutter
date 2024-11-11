@@ -47,21 +47,27 @@ class MockLocalSource extends _i1.Mock implements _i3.LocalSource {
   }
 
   @override
-  _i4.Future<void> cacheNews(List<_i5.NewsItem>? newsData) =>
+  _i4.Future<void> cacheNews(
+    String? key,
+    List<_i5.NewsItem>? newsData,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #cacheNews,
-          [newsData],
+          [
+            key,
+            newsData,
+          ],
         ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<List<_i5.NewsItem>> getNews() => (super.noSuchMethod(
+  _i4.Future<List<_i5.NewsItem>> getNews(String? key) => (super.noSuchMethod(
         Invocation.method(
           #getNews,
-          [],
+          [key],
         ),
         returnValue: _i4.Future<List<_i5.NewsItem>>.value(<_i5.NewsItem>[]),
       ) as _i4.Future<List<_i5.NewsItem>>);
@@ -115,17 +121,34 @@ class MockTechCrunchRemote extends _i1.Mock implements _i7.TechCrunchRemote {
   }
 
   @override
-  _i4.Future<_i2.RemoteResult<List<_i8.Article>>> getLatestNews() =>
+  _i4.Future<_i2.RemoteResult<List<_i8.Article>>> getTechLatestNews() =>
       (super.noSuchMethod(
         Invocation.method(
-          #getLatestNews,
+          #getTechLatestNews,
           [],
         ),
         returnValue: _i4.Future<_i2.RemoteResult<List<_i8.Article>>>.value(
             _FakeRemoteResult_0<List<_i8.Article>>(
           this,
           Invocation.method(
-            #getLatestNews,
+            #getTechLatestNews,
+            [],
+          ),
+        )),
+      ) as _i4.Future<_i2.RemoteResult<List<_i8.Article>>>);
+
+  @override
+  _i4.Future<_i2.RemoteResult<List<_i8.Article>>> getEconomyLatestNews() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getEconomyLatestNews,
+          [],
+        ),
+        returnValue: _i4.Future<_i2.RemoteResult<List<_i8.Article>>>.value(
+            _FakeRemoteResult_0<List<_i8.Article>>(
+          this,
+          Invocation.method(
+            #getEconomyLatestNews,
             [],
           ),
         )),

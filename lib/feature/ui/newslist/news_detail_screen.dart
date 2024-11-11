@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app_flutter/core/resouce/text_style.dart';
 
 import '../../../core/helper/nofication_permission.dart';
+import '../../../core/resouce/strings.dart';
 import '../../../data/model/ui/news_item.dart';
 import '../../component/error_state.dart';
 import '../../component/loading.dart';
@@ -14,17 +17,15 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     requestCameraPermission();
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true,
         ),
         home: Scaffold(
           appBar: AppBar(
-              title: Text("Detail",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              title:
+                  const Text(GetStrings.detail, style: GetStyle.toolbarBlack),
               centerTitle: true,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -34,29 +35,21 @@ class DetailScreen extends StatelessWidget {
               )),
           body: ListView(
             children: [
-              Image.network(
-                data.imgUrl,
+              CachedNetworkImage(
+                imageUrl: data.imgUrl,
                 height: 300,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return NewsItemCircularLoading(
-                      loadingProgress: loadingProgress);
-                },
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace? stackTrace) {
-                  return const ImageErrorPlaceHolder();
-                },
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    const NewsItemCircularLoading(),
+                errorWidget: (context, url, error) =>
+                    const ImageErrorPlaceHolder(),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 12, top: 6, right: 12),
                 child: Text(
                   data.title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: GetStyle.largeBoldBlack,
                   maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -65,7 +58,7 @@ class DetailScreen extends StatelessWidget {
                     left: 12, top: 12, right: 8, bottom: 30),
                 child: Text(
                   data.content + data.content + data.content,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: GetStyle.normalNormalBlack,
                 ),
               ),
             ],

@@ -17,13 +17,23 @@ void main() {
     sut = ApiCallImpl(httpClient: mockedClient);
   });
 
-  group("Api Call", () {
-    test("hit fetch news then should return value", () async {
+  group("Tech news", () {
+    test("should return value", () async {
       final body = Response("success", 200);
 
       when(mockedClient.get(any)).thenAnswer((_) => Future.value(body));
 
-      expect(body, await sut.fetchNews());
+      expect(body, await sut.fetchTechNews());
+    });
+  });
+
+  group("Economy news", () {
+    test("should return value", () async {
+      final body = Response("success", 200);
+
+      when(mockedClient.get(any)).thenAnswer((_) => Future.value(body));
+
+      expect(body, await sut.fetchEconomyNews());
     });
   });
 }

@@ -41,15 +41,30 @@ class MockApiCall extends _i1.Mock implements _i3.ApiCall {
   }
 
   @override
-  _i4.Future<_i2.Response> fetchNews() => (super.noSuchMethod(
+  _i4.Future<_i2.Response> fetchTechNews() => (super.noSuchMethod(
         Invocation.method(
-          #fetchNews,
+          #fetchTechNews,
           [],
         ),
         returnValue: _i4.Future<_i2.Response>.value(_FakeResponse_0(
           this,
           Invocation.method(
-            #fetchNews,
+            #fetchTechNews,
+            [],
+          ),
+        )),
+      ) as _i4.Future<_i2.Response>);
+
+  @override
+  _i4.Future<_i2.Response> fetchEconomyNews() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchEconomyNews,
+          [],
+        ),
+        returnValue: _i4.Future<_i2.Response>.value(_FakeResponse_0(
+          this,
+          Invocation.method(
+            #fetchEconomyNews,
             [],
           ),
         )),

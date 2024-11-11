@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/resouce/text_style.dart';
 import '../../data/model/ui/news_item.dart';
 import 'error_state.dart';
 import 'loading.dart';
@@ -19,8 +21,6 @@ class NewsItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     return Card(
       color: Colors.white,
       elevation: 2,
@@ -31,16 +31,15 @@ class NewsItemView extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => onPressedImage(newsData),
-              child: Image.network(newsData.imgUrl,
-                  width: 100, height: double.infinity, fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return NewsItemCircularLoading(
-                    loadingProgress: loadingProgress);
-              }, errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
-                return const ImageErrorPlaceHolder();
-              }),
+              child: CachedNetworkImage(
+                  imageUrl: newsData.imgUrl,
+                  width: 100,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      const NewsItemCircularLoading(),
+                  errorWidget: (context, url, error) =>
+                      const ImageErrorPlaceHolder()),
             ),
             Expanded(
                 child: GestureDetector(
@@ -53,7 +52,7 @@ class NewsItemView extends StatelessWidget {
                   children: [
                     Text(
                       newsData.title,
-                      style: textTheme.titleMedium,
+                      style: GetStyle.mediumBoldBlack,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,
@@ -62,9 +61,8 @@ class NewsItemView extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         newsData.content,
-                        style:
-                            textTheme.bodySmall?.copyWith(color: Colors.grey),
-                        maxLines: 2,
+                        style: GetStyle.smallNormalGray,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.left,
                       ),
