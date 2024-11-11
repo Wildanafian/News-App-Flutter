@@ -36,5 +36,7 @@ A sample News App built with Flutter, targeting both Android and iOS platforms.
 <div style="display: flex; flex-direction: column; align-items: center;">
   <img src="https://github.com/Wildanafian/News-App-Flutter/blob/master/screenshot/Screenshot_20241103_142734.png" alt="Front Page" width="300"/>
   <img src="https://github.com/Wildanafian/News-App-Flutter/blob/master/screenshot/Screenshot_20241103_142813.png" alt="Front Page" width="300"/>
+  <img src="https://github.com/Wildanafian/News-App-Flutter/blob/master/screenshot/Screenshot_20241111_095055.png" alt="Front Page" width="300"/>
+  <img src="https://github.com/Wildanafian/News-App-Flutter/blob/master/screenshot/Screenshot_20241111_095144.png" alt="Front Page" width="300"/>
   <img src="https://github.com/Wildanafian/News-App-Flutter/blob/master/screenshot/Screenshot%20at%20Nov%2004%2008-51-01.png" alt="Front Page"/>
 </div>
